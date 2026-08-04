@@ -8,7 +8,7 @@ The dashboard helps traders monitor their trading performance while keeping trac
 
 # 🚀 Live Demo & Repository
 
-**Live Demo:** 
+**Live Demo:** https://tradescape-dashboard-three.vercel.app/
 
 **GitHub Repository:** https://github.com/mayank156g-create/Tradescape-Dashboard
 
