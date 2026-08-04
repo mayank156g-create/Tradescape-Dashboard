@@ -8,7 +8,7 @@ The dashboard helps traders monitor their trading performance while keeping trac
 
 # 🚀 Live Demo & Repository
 
-**Live Demo:** *Add your Vercel deployment link here*
+**Live Demo:** 
 
 **GitHub Repository:** https://github.com/mayank156g-create/Tradescape-Dashboard
 
