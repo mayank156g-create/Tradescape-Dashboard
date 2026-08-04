@@ -35,11 +35,23 @@ export const calculateRemainingDailyLoss = (account, trades) =>
   account.dailyLossLimit - calculateCurrentDayLoss(trades);
 
 export const getRiskStatus = (remaining, limit) => {
+  if (limit <= 0 || remaining <= 0) return "At Risk";
+
   const percentage = (remaining / limit) * 100;
 
   if (percentage > 50) return "Safe";
   if (percentage > 20) return "Approaching Limit";
   return "At Risk";
+};
+
+export const getRiskStatusVariant = (status) => {
+  const variants = {
+    Safe: "safe",
+    "Approaching Limit": "warning",
+    "At Risk": "danger",
+  };
+
+  return variants[status] ?? "safe";
 };
 
 export const calculateAverageWin = (trades) => {

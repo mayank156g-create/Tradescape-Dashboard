@@ -1,17 +1,28 @@
+import TooltipLabel from "./TooltipLabel";
+
 function SummaryCard({
   title,
   value,
-  valueColor = "text-slate-800",
+  variant = "default",
+  tooltip,
 }) {
-  return (
-    <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
-      <p className="text-sm font-medium text-slate-500">
-        {title}
-      </p>
+  const valueClass =
+    variant === "profit"
+      ? "card__value card__value--profit mono"
+      : variant === "loss"
+        ? "card__value card__value--loss mono"
+        : variant === "amber"
+          ? "card__value card__value--amber mono"
+          : "card__value mono";
 
-      <h2 className={`mt-3 text-3xl font-bold ${valueColor}`}>
-        {value}
-      </h2>
+  return (
+    <div className="card">
+      {tooltip ? (
+        <TooltipLabel label={title} tip={tooltip} className="card__title" />
+      ) : (
+        <p className="card__title">{title}</p>
+      )}
+      <h2 className={valueClass}>{value}</h2>
     </div>
   );
 }

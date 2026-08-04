@@ -1,18 +1,27 @@
-function ProgressBar({ label, used, limit, color = "bg-blue-500" }) {
+import TooltipLabel from "./TooltipLabel";
+
+function ProgressBar({ label, tip, used, limit }) {
   const percentage = Math.min((used / limit) * 100, 100);
 
+  const status =
+    percentage >= 90 ? "danger" : percentage >= 70 ? "warning" : "safe";
+
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between text-sm">
-        <span className="text-slate-600">{label}</span>
-        <span className="font-medium text-slate-800">
+    <div className="progress-bar">
+      <div className="progress-bar__header">
+        {tip ? (
+          <TooltipLabel label={label} tip={tip} className="progress-bar__label" />
+        ) : (
+          <span className="progress-bar__label">{label}</span>
+        )}
+        <span className="progress-bar__values mono">
           ${used.toLocaleString()} / ${limit.toLocaleString()}
         </span>
       </div>
 
-      <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+      <div className="progress-bar__track">
         <div
-          className={`h-full rounded-full ${color}`}
+          className={`progress-bar__fill progress-bar__fill--${status}`}
           style={{ width: `${percentage}%` }}
         />
       </div>

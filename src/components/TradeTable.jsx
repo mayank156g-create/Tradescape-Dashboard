@@ -1,50 +1,55 @@
+import TooltipLabel from "./TooltipLabel";
+
 function TradeTable({ trades }) {
   return (
-    <section className="mt-8">
-      <div className="rounded-2xl bg-white p-6 shadow">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">
-          Trade History
-        </h2>
+    <section className="card">
+      <h2 className="card__section-title">Trade History</h2>
+      <p className="card__section-desc">Complete log of session trades.</p>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left">
-            <thead className="border-b border-slate-200 text-sm text-slate-500">
-              <tr>
-                <th className="pb-3 font-medium">Asset</th>
-                <th className="pb-3 font-medium">Direction</th>
-                <th className="pb-3 text-right font-medium">P&amp;L</th>
-              </tr>
-            </thead>
+      <div className="trade-table-wrapper">
+        <table className="trade-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Direction</th>
+              <th>
+                <TooltipLabel
+                  label="P&L"
+                  tip="Profit or loss realized when the trade was closed."
+                />
+              </th>
+            </tr>
+          </thead>
 
-            <tbody>
-              {trades.map((trade) => (
-                <tr
-                  key={trade.id}
-                  className="border-b border-slate-100 last:border-0"
+          <tbody>
+            {trades.map((trade) => (
+              <tr key={trade.id}>
+                <td>{trade.asset}</td>
+
+                <td
+                  className={
+                    trade.direction.toLowerCase() === "long"
+                      ? "trade-table__direction--long"
+                      : "trade-table__direction--short"
+                  }
                 >
-                  <td className="py-4 font-medium text-slate-800">
-                    {trade.asset}
-                  </td>
+                  {trade.direction}
+                </td>
 
-                  <td className="py-4 text-slate-600">
-                    {trade.direction}
-                  </td>
-
-                  <td
-                    className={`py-4 text-right font-semibold ${
-                      trade.pnl >= 0
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {trade.pnl >= 0 ? "+" : ""}
-                    ${trade.pnl.toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                <td
+                  className={`mono ${
+                    trade.pnl >= 0
+                      ? "trade-table__pnl--profit"
+                      : "trade-table__pnl--loss"
+                  }`}
+                >
+                  {trade.pnl >= 0 ? "+" : "-"}$
+                  {Math.abs(trade.pnl).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </section>
   );

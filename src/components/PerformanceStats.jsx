@@ -1,10 +1,21 @@
-function StatCard({ title, value, color = "text-slate-800" }) {
+import TooltipLabel from "./TooltipLabel";
+
+function StatCard({ title, value, variant = "default", tooltip }) {
+  const valueClass =
+    variant === "profit"
+      ? "perf-stat__value perf-stat__value--profit mono"
+      : variant === "loss"
+        ? "perf-stat__value perf-stat__value--loss mono"
+        : "perf-stat__value mono";
+
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-lg">
-      <p className="text-sm text-slate-500">{title}</p>
-      <h3 className={`mt-2 text-2xl font-bold ${color}`}>
-        {value}
-      </h3>
+    <div className="perf-stat">
+      {tooltip ? (
+        <TooltipLabel label={title} tip={tooltip} className="perf-stat__label" />
+      ) : (
+        <p className="perf-stat__label">{title}</p>
+      )}
+      <h3 className={valueClass}>{value}</h3>
     </div>
   );
 }
@@ -16,37 +27,42 @@ function PerformanceStats({
   averageLoss,
 }) {
   return (
-    <section>
-      <h2 className="mb-4 text-2xl font-bold text-slate-800">
-        Performance Statistics
-      </h2>
+    <div className="card">
+      <h2 className="card__section-title">Performance Statistics</h2>
+      <p className="card__section-desc">
+        Key trade metrics across your session history.
+      </p>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="perf-grid">
         <StatCard
           title="Largest Winning Trade"
           value={`+$${largestWin.toLocaleString()}`}
-          color="text-green-600"
+          variant="profit"
+          tooltip="The single most profitable trade in your session."
         />
 
         <StatCard
           title="Largest Losing Trade"
           value={`-$${Math.abs(largestLoss).toLocaleString()}`}
-          color="text-red-600"
+          variant="loss"
+          tooltip="The single largest loss taken during this session."
         />
 
         <StatCard
           title="Average Winning Trade"
           value={`+$${averageWin.toLocaleString()}`}
-          color="text-green-600"
+          variant="profit"
+          tooltip="Mean profit across all winning trades."
         />
 
         <StatCard
           title="Average Losing Trade"
           value={`-$${Math.abs(averageLoss).toLocaleString()}`}
-          color="text-red-600"
+          variant="loss"
+          tooltip="Mean loss across all losing trades — used by the Risk Simulator buffer."
         />
       </div>
-    </section>
+    </div>
   );
 }
 

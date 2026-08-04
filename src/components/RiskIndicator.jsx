@@ -1,20 +1,7 @@
 import ProgressBar from "./ProgressBar";
-
-function StatusBadge({ status }) {
-  const styles = {
-    Safe: "bg-green-100 text-green-700",
-    "Approaching Limit": "bg-yellow-100 text-yellow-700",
-    "At Risk": "bg-red-100 text-red-700",
-  };
-
-  return (
-    <span
-      className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${styles[status]}`}
-    >
-      {status}
-    </span>
-  );
-}
+import StatusBadge from "./StatusBadge";
+import TooltipLabel from "./TooltipLabel";
+import { getRiskStatusVariant } from "../utils/calculations";
 
 function RiskIndicator({
   drawdown,
@@ -25,14 +12,14 @@ function RiskIndicator({
   dailyLossLimit,
   status,
 }) {
+  const glowVariant = getRiskStatusVariant(status);
+
   return (
-    <section className="mt-8 rounded-2xl bg-white p-6 shadow">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className={`card card--risk-glow card--risk-glow--${glowVariant}`}>
+      <div className="section-header">
         <div>
-          <h2 className="text-xl font-semibold text-slate-800">
-            Risk Indicator
-          </h2>
-          <p className="text-sm text-slate-500">
+          <h2 className="card__section-title">Risk Progress</h2>
+          <p className="card__section-desc">
             Monitor your account against trading rules.
           </p>
         </div>
@@ -40,11 +27,10 @@ function RiskIndicator({
         <StatusBadge status={status} />
       </div>
 
-      {/* Risk Summary */}
-      <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <p className="text-sm text-slate-500">Current Risk Assessment</p>
+      <div className="risk-banner">
+        <p className="risk-banner__label">Current Risk Assessment</p>
 
-        <p className="mt-2 text-lg font-semibold text-slate-800">
+        <p className="risk-banner__message">
           {status === "Safe" &&
             "Your account is operating safely within the allowed risk limits."}
 
@@ -56,57 +42,55 @@ function RiskIndicator({
         </p>
       </div>
 
-      {/* Metrics */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 p-5">
-          <p className="text-sm text-slate-500">Current Drawdown</p>
-
-          <p className="mt-2 text-2xl font-bold text-slate-800">
-            ${drawdown.toLocaleString()}
-          </p>
-
-          <p className="mt-3 text-sm text-slate-600">
-            Remaining Drawdown
-          </p>
-
-          <p className="font-semibold text-green-600">
+      <div className="risk-metrics">
+        <div className="risk-metric">
+          <TooltipLabel
+            label="Current Drawdown"
+            tip="The peak-to-trough decline in your account balance from the starting equity."
+            className="risk-metric__label"
+          />
+          <p className="risk-metric__value mono">${drawdown.toLocaleString()}</p>
+          <TooltipLabel
+            label="Remaining Drawdown"
+            tip="How much additional loss you can absorb before hitting the max drawdown rule."
+            className="risk-metric__sub-label"
+          />
+          <p className="risk-metric__sub-value mono">
             ${remainingDrawdown.toLocaleString()}
           </p>
         </div>
 
-        <div className="rounded-xl border border-slate-200 p-5">
-          <p className="text-sm text-slate-500">Current Day Loss</p>
-
-          <p className="mt-2 text-2xl font-bold text-slate-800">
-            ${currentDayLoss.toLocaleString()}
-          </p>
-
-          <p className="mt-3 text-sm text-slate-600">
-            Remaining Daily Loss Limit
-          </p>
-
-          <p className="font-semibold text-green-600">
+        <div className="risk-metric">
+          <TooltipLabel
+            label="Current Day Loss"
+            tip="Total realized losses accumulated during today's trading session."
+            className="risk-metric__label"
+          />
+          <p className="risk-metric__value mono">${currentDayLoss.toLocaleString()}</p>
+          <TooltipLabel
+            label="Remaining Daily Loss Limit"
+            tip="The amount you can still lose today before breaching the daily loss cap."
+            className="risk-metric__sub-label"
+          />
+          <p className="risk-metric__sub-value mono">
             ${remainingDailyLoss.toLocaleString()}
           </p>
         </div>
       </div>
 
-      {/* Progress Bars */}
-      <div className="mt-8 space-y-5">
-        <ProgressBar
-          label="Drawdown Usage"
-          used={drawdown}
-          limit={maxDrawdown}
-          color="bg-orange-500"
-        />
+      <ProgressBar
+        label="Drawdown Usage"
+        tip="Percentage of your maximum allowed drawdown currently consumed."
+        used={drawdown}
+        limit={maxDrawdown}
+      />
 
-        <ProgressBar
-          label="Daily Loss Usage"
-          used={currentDayLoss}
-          limit={dailyLossLimit}
-          color="bg-red-500"
-        />
-      </div>
+      <ProgressBar
+        label="Daily Loss Usage"
+        tip="Percentage of today's daily loss limit that has been used so far."
+        used={currentDayLoss}
+        limit={dailyLossLimit}
+      />
     </section>
   );
 }
